@@ -112,25 +112,30 @@ def insert_teams_and_assign_players():
 
     conn.commit()
 
-    # Assign players to each team
+    # Fetch all player IDs
+    cursor.execute('SELECT id FROM players')
+    all_player_ids = [row[0] for row in cursor.fetchall()]
+    random.shuffle(all_player_ids)  # Shuffle the list to randomize player assignment
+
+    # Assign 6 to 10 players to each team, ensuring players are only assigned once
     for team_id in range(1, len(team_names) + 1):
-        # Randomly decide how many players this team will have (6 to 10)
         number_of_players = random.randint(6, 10)
-        # Get random player IDs to assign
-        cursor.execute('SELECT id FROM players ORDER BY RANDOM() LIMIT ?', (number_of_players,))
-        player_ids = cursor.fetchall()
-        
+        # Select the next batch of player IDs
+        team_player_ids = all_player_ids[:number_of_players]
+        all_player_ids = all_player_ids[number_of_players:]  # Remove the assigned players
+
         # Insert player-team relationships into the junction table
-        for player_id in player_ids:
+        for player_id in team_player_ids:
             cursor.execute('''
                 INSERT INTO team_players (team_id, player_id)
                 VALUES (?, ?)
-            ''', (team_id, player_id[0]))
+            ''', (team_id, player_id))
 
     conn.commit()
     conn.close()
 
-# Main function to setup the database and insert data
+
+# Main function to set up the database and insert data
 def main():
     for i in range(100):
         setup_database()

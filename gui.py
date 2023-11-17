@@ -40,14 +40,20 @@ def get_players_for_team(team_name):
                 roles_filled.add(player[2])
                 if player[8]:
                     igl_found = True
+            else:
+                bench.append(player)
         else:
             bench.append(player)
+
+    while len(starters) < 5:
+        player_to_move = bench.pop(0)
+        starters.append(player_to_move)
 
     # Format player information for display
     formatted_starters = ["Starter - " + format_player_info(player) for player in starters]
     formatted_bench = ["Bench - " + format_player_info(player) for player in bench]
 
-    return formatted_starters + formatted_bench
+    return formatted_starters + formatted_bench, starters
 
 def format_player_info(player):
     return (f"{player[0]} {player[1]}, Role: {player[2]}, "
@@ -58,17 +64,17 @@ def format_player_info(player):
 
 def update_players_display(team_name, players_listbox):
     players_listbox.delete(0, tk.END)
-    players = get_players_for_team(team_name)
+    players, players_string = get_players_for_team(team_name)
     for player in players:
         players_listbox.insert(tk.END, player)
 
 def simulate_game(team1, team2):
-    team1_starters = get_players_for_team(team1)[:5]  # Assuming first 5 are starters
-    team2_starters = get_players_for_team(team2)[:5]
+    team1_starters, team1_players = get_players_for_team(team1)[:5]  # Assuming first 5 are starters
+    team2_starters, team2_players = get_players_for_team(team2)[:5]
 
     # Convert ratings from string to int and sum them
-    team1_rating = sum(sum(int(rating) for rating in player[3:8]) for player in team1_starters)
-    team2_rating = sum(sum(int(rating) for rating in player[3:8]) for player in team2_starters)
+    team1_rating = sum(sum(int(rating) for rating in player[3:8]) for player in team1_players)
+    team2_rating = sum(sum(int(rating) for rating in player[3:8]) for player in team2_players)
 
 
     team1_score, team2_score = 0, 0
