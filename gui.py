@@ -48,6 +48,13 @@ def get_players_for_team(team_name):
     while len(starters) < 5:
         player_to_move = bench.pop(0)
         starters.append(player_to_move)
+        
+    while len(starters) > 5:
+        if starters[0][8]:
+            player_to_move = starters.pop(1)
+        else:
+            player_to_move = starters.pop(0)
+        bench.append(player_to_move)
 
     # Format player information for display
     formatted_starters = ["Starter - " + format_player_info(player) for player in starters]
