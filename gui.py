@@ -16,12 +16,12 @@ def get_players_for_team(team_name):
     conn = sqlite3.connect('esports_manager.db')
     cursor = conn.cursor()
     cursor.execute('''
-        SELECT p.first_name, p.last_name, p.role, p.aim, p.positioning, p.utility, p.leadership, p.mental, p.igl 
-        FROM players p
+        SELECT p.id, p.first_name, p.last_name, p.role, p.aim, p.positioning, 
+        p.utility, p.leadership, p.mental, p.igl FROM players p
         JOIN team_players tp ON p.id = tp.player_id
         JOIN teams t ON tp.team_id = t.id
         WHERE t.name = ?
-        ORDER BY p.aim + p.positioning + p.utility + p.leadership + p.mental DESC, p.igl DESC
+        ORDER BY (p.aim + p.positioning + p.utility + p.leadership + p.mental) DESC, p.igl DESC
     ''', (team_name,))
     players = cursor.fetchall()
     conn.close()
@@ -32,29 +32,33 @@ def get_players_for_team(team_name):
     roles_filled = set()
     igl_found = False
 
+    # First, ensure we fill each role with the best player available
     for player in players:
-        if len(starters) < 5 or (player[8] and not igl_found):
-            # Ensure one starter has IGL experience and all roles are filled
-            if player[2] not in roles_filled or (player[8] and not igl_found):
-                starters.append(player)
-                roles_filled.add(player[2])
-                if player[8]:
-                    igl_found = True
-            else:
-                bench.append(player)
+        if player[3] not in roles_filled:
+            starters.append(player)
+            roles_filled.add(player[3])
+            if player[9]:
+                igl_found = True
         else:
             bench.append(player)
 
-    while len(starters) < 5:
-        player_to_move = bench.pop(0)
-        starters.append(player_to_move)
-        
+    # If no IGL found yet, attempt to add one from the bench
+    if not igl_found:
+        for player in bench:
+            if player[9]:
+                bench.remove(player)
+                starters.append(player)
+                igl_found = True
+                break
+
+    # If we have too many starters due to adding an IGL, move extra to bench
     while len(starters) > 5:
-        if starters[0][8]:
-            player_to_move = starters.pop(1)
-        else:
-            player_to_move = starters.pop(0)
-        bench.append(player_to_move)
+        starters.sort(key=lambda p: sum(p[4:9]), reverse=True)  # Sort starters by total rating
+        bench.append(starters.pop())  # Move the lowest rated starter to bench
+        
+    while len(starters) < 5:
+        bench.sort(key=lambda p: sum(p[4:9]), reverse=False)  # Sort bench by total rating
+        starters.append(bench.pop())  # Move the highest rated player from bench to starters
 
     # Format player information for display
     formatted_starters = ["Starter - " + format_player_info(player) for player in starters]
@@ -62,11 +66,12 @@ def get_players_for_team(team_name):
 
     return formatted_starters + formatted_bench, starters
 
+
 def format_player_info(player):
-    return (f"{player[0]} {player[1]}, Role: {player[2]}, "
-            f"Ratings - Aim: {player[3]}, Positioning: {player[4]}, "
-            f"Utility: {player[5]}, Leadership: {player[6]}, Mental: {player[7]}, "
-            f"IGL: {'Yes' if player[8] else 'No'}")
+    return (f"{player[1]} {player[2]}, Role: {player[3]}, "
+            f"Ratings - Aim: {player[4]}, Positioning: {player[5]}, "
+            f"Utility: {player[6]}, Leadership: {player[7]}, Mental: {player[8]}, "
+            f"IGL: {'Yes' if player[9] else 'No'}")
 
 
 def update_players_display(team_name, players_listbox):
@@ -80,8 +85,8 @@ def simulate_game(team1, team2):
     team2_starters, team2_players = get_players_for_team(team2)[:5]
 
     # Convert ratings from string to int and sum them
-    team1_rating = sum(sum(int(rating) for rating in player[3:8]) for player in team1_players)
-    team2_rating = sum(sum(int(rating) for rating in player[3:8]) for player in team2_players)
+    team1_rating = sum(sum(int(rating) for rating in player[4:9]) for player in team1_players)
+    team2_rating = sum(sum(int(rating) for rating in player[4:9]) for player in team2_players)
 
 
     team1_score, team2_score = 0, 0
