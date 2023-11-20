@@ -1,5 +1,4 @@
 import random
-from database_manager import DatabaseManager
 
 class GameSimulation:
     def __init__(self, db_manager):
@@ -47,3 +46,50 @@ class GameSimulation:
         self.db_manager.insert_match_result(team1, team2, team1_score, team2_score, mvp_player_id)
 
         return team1_score, team2_score
+
+class Tournament:
+    def __init__(self, teams, game_simulator):
+        self.teams = teams
+        self.matches = self.create_bracket(teams)
+        self.current_round = 0
+        self.next_round_matches = []
+        self.tournament_winner = None
+        self.game_simulator = game_simulator
+
+    @staticmethod
+    def create_bracket(teams):
+        random.shuffle(teams)
+        return [(teams[i], teams[i+1]) for i in range(0, len(teams), 2)]
+
+    def play_match(self):
+        if self.current_round < len(self.matches):
+            team1, team2 = self.matches[self.current_round]
+            # Simulate the match and determine the winner
+            team1_score, team2_score = self.game_simulator.simulate_game(team1, team2)
+            winner = team1 if team1_score > team2_score else team2
+
+            # Check if it's time to move to the next round
+            if len(self.next_round_matches) == self.current_round // 2:
+                # Start populating the next round
+                self.next_round_matches.append([winner])
+            else:
+                # Complete the next match-up
+                self.next_round_matches[-1].append(winner)
+
+            self.current_round += 1
+
+            # If the current round is complete, prepare for the next one
+            if self.current_round == len(self.matches):
+                if len(self.next_round_matches) > 1:
+                    self.matches = self.next_round_matches
+                    self.next_round_matches = []
+                    self.current_round = 0
+                else:
+                    # Tournament is complete, we have a winner
+                    self.tournament_winner = winner
+                    return None
+
+            return team1, team2, team1_score, team2_score, winner
+
+        else:
+            return None
