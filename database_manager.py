@@ -106,7 +106,8 @@ class DatabaseManager:
         conn.commit()
         conn.close()
 
-    def get_past_game_results(self):
+    @staticmethod
+    def get_past_game_results():
         conn = sqlite3.connect('esports_manager.db')
         cursor = conn.cursor()
         cursor.execute('''
