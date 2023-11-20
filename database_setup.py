@@ -1,5 +1,6 @@
 import sqlite3
 import random
+import os
 
 # Database setup
 def setup_database():
@@ -59,9 +60,14 @@ def setup_database():
     FOREIGN KEY (loser_id) REFERENCES teams (id),
     FOREIGN KEY (mvp_player_id) REFERENCES players (id))
     ''')
-    
+
+
+
     conn.commit()
     conn.close()
+
+    insert_players(100)
+    insert_teams_and_assign_players()
 
 # Function to get random names from files
 def get_random_name_from_file(first_name_file, last_name_file):
@@ -88,24 +94,26 @@ def generate_random_igl():
     return random.choice([True] + [False] * 9)  # 10% True, 90% False
 
 # Function to insert a new player into the database
-def insert_player():
-    first_name, last_name = get_random_name_from_file('firstname.txt', 'lastname.txt')
-    username = first_name.lower() + last_name.lower()
-    role = generate_random_role()
-    aim = generate_random_stat()
-    positioning = generate_random_stat()
-    utility = generate_random_stat()
-    leadership = generate_random_stat()
-    mental = generate_random_stat()
-    igl = generate_random_igl()
-    
+def insert_players(count):
     conn = sqlite3.connect('esports_manager.db')
+    players_data = []
+    for _ in range(count):
+        first_name, last_name = get_random_name_from_file('firstname.txt', 'lastname.txt')
+        username = first_name.lower() + last_name.lower()
+        role = generate_random_role()
+        aim = generate_random_stat()
+        positioning = generate_random_stat()
+        utility = generate_random_stat()
+        leadership = generate_random_stat()
+        mental = generate_random_stat()
+        igl = generate_random_igl()
+        players_data.append((first_name, last_name, username, role, aim, positioning, utility, leadership, mental, igl))
+
     cursor = conn.cursor()
-    cursor.execute('''
+    cursor.executemany('''
     INSERT INTO players (first_name, last_name, username, role, aim, positioning, utility, leadership, mental, igl)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ''', (first_name, last_name, username, role, aim, positioning, utility, leadership, mental, igl))
-    
+    ''', players_data)
     conn.commit()
     conn.close()
 
@@ -153,11 +161,11 @@ def insert_teams_and_assign_players():
 
 
 # Main function to set up the database and insert data
-def main():
-    for i in range(100):
+def main_setup():
+    db_exists = os.path.isfile('esports_manager.db')
+    if not db_exists:
         setup_database()
-        insert_player()
-    insert_teams_and_assign_players()
+
 
 if __name__ == "__main__":
-    main()
+    main_setup()

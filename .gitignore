@@ -7,3 +7,4 @@ esports_manager.db
 .idea/EsportsManagerGame.iml
 .idea/workspace.xml
 __pycache__/database_manager.cpython-310.pyc
+__pycache__/database_setup.cpython-310.pyc

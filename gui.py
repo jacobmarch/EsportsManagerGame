@@ -2,7 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from database_manager import DatabaseManager
+from database_setup import main_setup
 import random
+
+main_setup()
 
 db_manager = DatabaseManager('esports_manager.db')
 
