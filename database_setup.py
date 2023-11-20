@@ -42,6 +42,23 @@ def setup_database():
         PRIMARY KEY (team_id, player_id)
     )
     ''')
+
+    # Create the matches table
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS matches (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    team1_id INTEGER NOT NULL,
+    team2_id INTEGER NOT NULL,
+    winner_id INTEGER NOT NULL,
+    loser_id INTEGER NOT NULL,
+    score TEXT NOT NULL,
+    mvp_player_id INTEGER NOT NULL,
+    FOREIGN KEY (team1_id) REFERENCES teams (id),
+    FOREIGN KEY (team2_id) REFERENCES teams (id),
+    FOREIGN KEY (winner_id) REFERENCES teams (id),
+    FOREIGN KEY (loser_id) REFERENCES teams (id),
+    FOREIGN KEY (mvp_player_id) REFERENCES players (id))
+    ''')
     
     conn.commit()
     conn.close()
