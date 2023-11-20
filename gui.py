@@ -2,53 +2,20 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from database_manager import DatabaseManager
+from game_simulation import GameSimulation
 from database_setup import main_setup
 import random
 
 main_setup()
 
 db_manager = DatabaseManager('esports_manager.db')
-
-def determine_mvp(team_starters):
-    # Adjust weights for randomness; higher-rated players are more likely to be MVP, but not guaranteed
-    weights = [sum(int(rating) for rating in player[4:9]) + random.uniform(0, 100) for player in team_starters]
-    mvp_index = weights.index(max(weights))
-    return team_starters[mvp_index][0]
+game_simulator = GameSimulation(db_manager)
 
 def update_players_display(team_name, players_listbox):
     players_listbox.delete(0, tk.END)
     players, players_string = db_manager.get_players_for_team(team_name)
     for player in players:
         players_listbox.insert(tk.END, player)
-
-def simulate_game(team1, team2):
-    team1_starters, team1_players = db_manager.get_players_for_team(team1)[:5]  # Assuming first 5 are starters
-    team2_starters, team2_players = db_manager.get_players_for_team(team2)[:5]
-
-    # Convert ratings from string to int and sum them
-    team1_rating = sum(sum(int(rating) for rating in player[4:9]) for player in team1_players)
-    team2_rating = sum(sum(int(rating) for rating in player[4:9]) for player in team2_players)
-
-
-    team1_score, team2_score = 0, 0
-
-    # Simulate rounds until a team reaches 13 points and is ahead by 2
-    while not (team1_score >= 13 or team2_score >= 13) or abs(team1_score - team2_score) < 2:
-        if random.uniform(0, team1_rating + team2_rating) < team1_rating:
-            team1_score += 1
-        else:
-            team2_score += 1
-
-    if team1_score > team2_score:
-        winning_team_starters = team1_players
-    else:
-        winning_team_starters = team2_players
-    print(winning_team_starters)
-    mvp_player_id = determine_mvp(winning_team_starters)  # You need to define winning_team_starters
-    db_manager.insert_match_result(team1, team2, team1_score, team2_score, mvp_player_id)
-
-    return team1_score, team2_score
-
 
 def update_past_games_display():
     past_games = db_manager.get_past_game_results()
@@ -66,7 +33,7 @@ def on_play_game_clicked():
         messagebox.showwarning("Warning", "Please select both teams before playing the game.")
         return
 
-    team1_score, team2_score = simulate_game(team1, team2)
+    team1_score, team2_score = game_simulator.simulate_game(team1, team2)
     result_message = f"Match Result:\n{team1}: {team1_score}\n{team2}: {team2_score}"
     update_past_games_display()
     messagebox.showinfo("Game Result", result_message)
