@@ -12,6 +12,14 @@ china_team_names = ["EDward Gaming", "Bilibili Gaming", "Trace Esports", "Rare A
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+class NP_Team:
+    def __init__(self, name, region, rating):
+        self.name = name
+        self.region = region
+        self.rating = rating
+        self.wins = 0
+        self.losses = 0
+
 class Player:
     def __init__(self, name, rating, role, salary):
         self.name = name
@@ -63,34 +71,34 @@ class Team:
                 if team == self.name:
                     continue
                 else:
-                    self.schedule.append(team)
+                    self.schedule.append(NP_Team(team, self.region, random.randint(1, 100)))
                     random.shuffle(self.schedule)
         elif self.region == "EMEA":
             for team in emea_team_names:
                 if team == self.name:
                     continue
                 else:
-                    self.schedule.append(team)
+                    self.schedule.append(NP_Team(team, self.region, random.randint(1, 100)))
                     random.shuffle(self.schedule)
         elif self.region == "APAC":
             for team in apac_team_names:
                 if team == self.name:
                     continue
                 else:
-                    self.schedule.append(team)
+                    self.schedule.append(NP_Team(team, self.region, random.randint(1, 100)))
                     random.shuffle(self.schedule)
         elif self.region == "China":
             for team in china_team_names:
                 if team == self.name:
                     continue
                 else:
-                    self.schedule.append(team)
+                    self.schedule.append(NP_Team(team, self.region, random.randint(1, 100)))
                     random.shuffle(self.schedule)
 
     def display_schedule(self):
-        print("\n" + self.name + "'s Schedule:")
+        print("\n" + self.name + "'s " + str(current_year) + "Schedule:")
         for i, team in enumerate(self.schedule):
-            print(str(i + 1) + ". " + team)
+            print(str(i + 1) + ". " + team.name)
 
 def region_select():
     while True:    
@@ -219,6 +227,10 @@ while True:
         player_team.display_schedule()
         input("Press any key to continue...")
         ### Create a method to play each game, week-by-week
+        clear_console()
+        
+        for week in player_team.schedule:
+            week.play_game()
         ### Display results of each game
 
     elif choice == 2:
