@@ -175,16 +175,12 @@ while True:
         for i, player in enumerate(player_team.players):
             print("{:<4} {:<20} {:<10} {:<10} {:<10}".format(i + 1, player.name, player.rating, player.role, player.salary))
         print("\n")
-        choice = int(input("Press 1 to continue. Press 2 to exit. "))
-        if choice == 1:
-            continue
-        elif choice == 2:
-            break
-        else:
-            print("Invalid choice")
+        # Make the user input any key to move on
+        input("Press any key to continue...")
         clear_console()
         
     elif choice == 2:
+        clear_console()
         break
     else:
         print("Invalid choice")
