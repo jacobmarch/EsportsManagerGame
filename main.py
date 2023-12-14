@@ -1,7 +1,13 @@
 import random
 import os
 
+player_team = None
 current_year = 2023
+amer_team_names = ["Sentinels", "LOUD", "NRG", "EG", "Leviatan", "Kru", "MiBR", "Furia", "Cloud9", "100Thieves"]
+apac_team_names = ["DRX", "Paper Rex", "T1", "ZETA DIVISION", "Team Secret", "Gen. G", "RRQ", "Global Esports", "Talon Esports", "DFM"]
+emea_team_names = ["FNATIC", "NaVi", "Team Liquid", "Giants Gaming", "FUT Esports", "Team Vitality", "BBL Esports", "Team Heretics", "KOI", "Karmine Corp"]
+china_team_names = ["EDward Gaming", "Bilibili Gaming", "Trace Esports", "Rare Atom", "Attacking Soul Esports", "TOP Esports", "Dragon Ranger Gaming", "FPX", "Titan Esports Club", "17Gaming"]
+
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -23,6 +29,7 @@ class Team:
         self.coach = None
         self.budget = None
         self.current_salary = 0
+        self.schedule = []
         
     def add_player(self, player):
         if (player.salary + self.current_salary) > self.budget:
@@ -48,14 +55,42 @@ class Team:
         
     def remove_player(self, player):
         self.players.remove(player)
-        
-        
-amer_team_names = ["Sentinels", "LOUD", "NRG", "EG", "Leviatan", "Kru", "MiBR", "Furia", "Cloud9", "100Thieves"]
-apac_team_names = ["DRX", "Paper Rex", "T1", "ZETA DIVISION", "Team Secret", "Gen. G", "RRQ", "Global Esports", "Talon Esports", "DFM"]
-emea_team_names = ["FNATIC", "NaVi", "Team Liquid", "Giants Gaming", "FUT Esports", "Team Vitality", "BBL Esports", "Team Heretics", "KOI", "Karmine Corp"]
-china_team_names = ["EDward Gaming", "Bilibili Gaming", "Trace Esports", "Rare Atom", "Attacking Soul Esports", "TOP Esports", "Dragon Ranger Gaming", "FPX", "Titan Esports Club", "17Gaming"]
 
-player_team = None
+    def create_schedule(self):
+        if self.region == "Americas":
+            # Randomly create a schedule using the teams from this array except for the player team
+            for team in amer_team_names:
+                if team == self.name:
+                    continue
+                else:
+                    self.schedule.append(team)
+                    random.shuffle(self.schedule)
+        elif self.region == "EMEA":
+            for team in emea_team_names:
+                if team == self.name:
+                    continue
+                else:
+                    self.schedule.append(team)
+                    random.shuffle(self.schedule)
+        elif self.region == "APAC":
+            for team in apac_team_names:
+                if team == self.name:
+                    continue
+                else:
+                    self.schedule.append(team)
+                    random.shuffle(self.schedule)
+        elif self.region == "China":
+            for team in china_team_names:
+                if team == self.name:
+                    continue
+                else:
+                    self.schedule.append(team)
+                    random.shuffle(self.schedule)
+
+    def display_schedule(self):
+        print("\n" + self.name + "'s Schedule:")
+        for i, team in enumerate(self.schedule):
+            print(str(i + 1) + ". " + team)
 
 def region_select():
     while True:    
@@ -178,7 +213,14 @@ while True:
         # Make the user input any key to move on
         input("Press any key to continue...")
         clear_console()
-        
+        ### Create a schedule for the season
+        player_team.create_schedule()
+        ### Display schedule
+        player_team.display_schedule()
+        input("Press any key to continue...")
+        ### Create a method to play each game, week-by-week
+        ### Display results of each game
+
     elif choice == 2:
         clear_console()
         break
