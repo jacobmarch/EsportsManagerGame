@@ -1,6 +1,8 @@
 import random
 import os
 
+current_year = 2023
+
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -111,6 +113,7 @@ def initial_player_select():
         print("{:<4} {:<20} {:<10} {:<10} {:<10}".format(i + 1, player.name, player.rating, player.role, player.salary))
 
     print("\n")
+    initial_clear_complete = False
     while True:
         print("You have " + str(player_team.budget - player_team.current_salary) + " reamining in your budget.\n")
         player_choice = int(input("Enter the number of the player you want to add to your team: "))
@@ -131,6 +134,8 @@ def initial_player_select():
             player_team.remove_player(player_team.players[abs(player_choice) - 1])
         else:
             print("Invalid choice")
+        if initial_clear_complete:
+            clear_console()
         print("\nYour Current Roster:\n")
         print("{:<4} {:<20} {:<10} {:<10} {:<10}".format("#", "Name", "Rating", "Role", "Salary"))
         for i, player in enumerate(player_team.players):
@@ -140,6 +145,7 @@ def initial_player_select():
         for i, player in enumerate(players):
             print("{:<4} {:<20} {:<10} {:<10} {:<10}".format(i + 1, player.name, player.rating, player.role, player.salary))
         print("\n 0. Continue\n")
+        initial_clear_complete = True
 
 while True:
     clear_console()
@@ -163,6 +169,21 @@ while True:
             player_team = Team(china_team_names[choice - 1], "China")
         player_team.budget = 400000
         initial_player_select()
+        print("\n")
+        print("Your final roster for the " + str(current_year) + " season:\n")
+        print("{:<4} {:<20} {:<10} {:<10} {:<10}".format("#", "Name", "Rating", "Role", "Salary"))
+        for i, player in enumerate(player_team.players):
+            print("{:<4} {:<20} {:<10} {:<10} {:<10}".format(i + 1, player.name, player.rating, player.role, player.salary))
+        print("\n")
+        choice = int(input("Press 1 to continue. Press 2 to exit. "))
+        if choice == 1:
+            continue
+        elif choice == 2:
+            break
+        else:
+            print("Invalid choice")
+        clear_console()
+        
     elif choice == 2:
         break
     else:
