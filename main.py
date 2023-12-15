@@ -1,5 +1,6 @@
 import random
 import os
+from game import *
 
 player_team = None
 current_year = 2023
@@ -63,6 +64,7 @@ class Team:
         
     def remove_player(self, player):
         self.players.remove(player)
+        self.current_salary -= player.salary
 
     def create_schedule(self):
         if self.region == "Americas":
@@ -71,34 +73,51 @@ class Team:
                 if team == self.name:
                     continue
                 else:
-                    self.schedule.append(NP_Team(team, self.region, random.randint(1, 100)))
+                    self.schedule.append(NP_Team(team, self.region, random.randint(30, 70)))
                     random.shuffle(self.schedule)
         elif self.region == "EMEA":
             for team in emea_team_names:
-                if team == self.name:
+                if team == selfw.name:
                     continue
                 else:
-                    self.schedule.append(NP_Team(team, self.region, random.randint(1, 100)))
+                    self.schedule.append(NP_Team(team, self.region, random.randint(30, 70)))
                     random.shuffle(self.schedule)
         elif self.region == "APAC":
             for team in apac_team_names:
                 if team == self.name:
                     continue
                 else:
-                    self.schedule.append(NP_Team(team, self.region, random.randint(1, 100)))
+                    self.schedule.append(NP_Team(team, self.region, random.randint(30, 70)))
                     random.shuffle(self.schedule)
         elif self.region == "China":
             for team in china_team_names:
                 if team == self.name:
                     continue
                 else:
-                    self.schedule.append(NP_Team(team, self.region, random.randint(1, 100)))
+                    self.schedule.append(NP_Team(team, self.region, random.randint(30, 70)))
                     random.shuffle(self.schedule)
 
     def display_schedule(self):
         print("\n" + self.name + "'s " + str(current_year) + "Schedule:")
         for i, team in enumerate(self.schedule):
             print(str(i + 1) + ". " + team.name)
+
+def display_standings(current_week):
+    print("\nWeek " + str(current_week) + " Standings:")
+    print("{:<20}{:<5}{:<5}".format("Team", "W", "L"))
+    print("\n")
+    for i, team in enumerate(player_team.schedule):
+        player_ratings = [player.rating for player in player_team.players]
+        avg_rating = sum(player_ratings) / len(player_ratings)
+        player_team_filler = NP_Team(player_team.name, player_team.region, avg_rating)
+        player_team_filler.wins = player_team.wins
+        player_team_filler.losses = player_team.losses
+        all_teams = player_team.schedule
+        all_teams.append(player_team_filler)
+        sorted_teams = sorted(all_teams, key=lambda x: x.wins, reverse=True)
+        print("{:<20}{:<5}{:<5}".format(sorted_teams[i].name, sorted_teams[i].wins, sorted_teams[i].losses))
+
+
 
 def region_select():
     while True:    
@@ -229,8 +248,29 @@ while True:
         ### Create a method to play each game, week-by-week
         clear_console()
         
-        for week in player_team.schedule:
-            week.play_game()
+        current_position = 0
+        for i, team in enumerate(player_team.schedule):
+            print("\nWeek " + str(i + 1) + ":")
+            score1, score2 = play_game_player(player_team, player_team.schedule[i])
+            score3, score4 = play_game_nonplayer(player_team.schedule[(current_position + i + 1) % len(player_team.schedule)], player_team.schedule[(current_position + i + 2) % len(player_team.schedule)])
+            score5, score6 = play_game_nonplayer(player_team.schedule[(current_position + i + 3) % len(player_team.schedule)], player_team.schedule[(current_position + i + 4) % len(player_team.schedule)])
+            score7, score8 = play_game_nonplayer(player_team.schedule[(current_position + i + 5) % len(player_team.schedule)], player_team.schedule[(current_position + i + 6) % len(player_team.schedule)])
+            score9, score10 = play_game_nonplayer(player_team.schedule[(current_position + i + 7) % len(player_team.schedule)], player_team.schedule[(current_position + i + 8) % len(player_team.schedule)])
+            # Ouput the scores of each match is a neatly formatted table
+            print("\n")
+            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.name, str(score1), " vs ", str(score2), player_team.schedule[i].name))
+            print("\n")
+            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(current_position + i + 1) % len(player_team.schedule)].name, str(score3), " vs ", str(score4), player_team.schedule[(current_position + i + 2) % len(player_team.schedule)].name))
+            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(current_position + i + 3) % len(player_team.schedule)].name, str(score5), " vs ", str(score6), player_team.schedule[(current_position + i + 4) % len(player_team.schedule)].name))
+            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(current_position + i + 5) % len(player_team.schedule)].name, str(score7), " vs ", str(score8), player_team.schedule[(current_position + i + 6) % len(player_team.schedule)].name))
+            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(current_position + i + 7) % len(player_team.schedule)].name, str(score9), " vs ", str(score10), player_team.schedule[(current_position + i + 8) % len(player_team.schedule)].name))
+            input("Press any key to continue...")
+            current_position += 1
+            clear_console()
+            display_standings(i + 1)
+            input("Press any key to continue...")
+            clear_console()
+
         ### Display results of each game
 
     elif choice == 2:
