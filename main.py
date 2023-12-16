@@ -8,7 +8,8 @@ amer_team_names = ["Sentinels", "LOUD", "NRG", "EG", "Leviatan", "Kru", "MiBR", 
 apac_team_names = ["DRX", "Paper Rex", "T1", "ZETA DIVISION", "Team Secret", "Gen. G", "RRQ", "Global Esports", "Talon Esports", "DFM"]
 emea_team_names = ["FNATIC", "NaVi", "Team Liquid", "Giants Gaming", "FUT Esports", "Team Vitality", "BBL Esports", "Team Heretics", "KOI", "Karmine Corp"]
 china_team_names = ["EDward Gaming", "Bilibili Gaming", "Trace Esports", "Rare Atom", "Attacking Soul Esports", "TOP Esports", "Dragon Ranger Gaming", "FPX", "Titan Esports Club", "17Gaming"]
-
+team_copy_made = False
+teams_to_be_sorted = []
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -77,7 +78,7 @@ class Team:
                     random.shuffle(self.schedule)
         elif self.region == "EMEA":
             for team in emea_team_names:
-                if team == selfw.name:
+                if team == self.name:
                     continue
                 else:
                     self.schedule.append(NP_Team(team, self.region, random.randint(30, 70)))
@@ -103,10 +104,12 @@ class Team:
             print(str(i + 1) + ". " + team.name)
 
 def display_standings(current_week):
+    global team_copy_made
+    global teams_to_be_sorted
     print("\nWeek " + str(current_week) + " Standings:")
     print("{:<20}{:<5}{:<5}".format("Team", "W", "L"))
     print("\n")
-    for i, team in enumerate(player_team.schedule):
+    if team_copy_made == False:
         player_ratings = [player.rating for player in player_team.players]
         avg_rating = sum(player_ratings) / len(player_ratings)
         player_team_filler = NP_Team(player_team.name, player_team.region, avg_rating)
@@ -114,7 +117,10 @@ def display_standings(current_week):
         player_team_filler.losses = player_team.losses
         all_teams = player_team.schedule
         all_teams.append(player_team_filler)
-        sorted_teams = sorted(all_teams, key=lambda x: x.wins, reverse=True)
+        team_copy_made = True
+        teams_to_be_sorted = all_teams
+    sorted_teams = sorted(teams_to_be_sorted, key=lambda x: x.wins, reverse=True)
+    for i, team in enumerate(player_team.schedule):
         print("{:<20}{:<5}{:<5}".format(sorted_teams[i].name, sorted_teams[i].wins, sorted_teams[i].losses))
 
 
