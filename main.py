@@ -99,7 +99,7 @@ class Team:
                     random.shuffle(self.schedule)
 
     def display_schedule(self):
-        print("\n" + self.name + "'s " + str(current_year) + "Schedule:")
+        print("\n" + self.name + "'s " + str(current_year) + " Schedule:")
         for i, team in enumerate(self.schedule):
             print(str(i + 1) + ". " + team.name)
 
