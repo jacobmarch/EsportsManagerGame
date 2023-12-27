@@ -119,6 +119,11 @@ def display_standings(current_week):
         all_teams.append(player_team_filler)
         team_copy_made = True
         teams_to_be_sorted = all_teams
+    else:
+        existing_team_filler = next((team for team in teams_to_be_sorted if team.name == player_team.name), None)
+        if existing_team_filler is not None:
+            existing_team_filler.wins = player_team.wins
+            existing_team_filler.losses = player_team.losses
     sorted_teams = sorted(teams_to_be_sorted, key=lambda x: x.wins, reverse=True)
     for i, team in enumerate(player_team.schedule):
         print("{:<20}{:<5}{:<5}".format(sorted_teams[i].name, sorted_teams[i].wins, sorted_teams[i].losses))
@@ -258,18 +263,18 @@ while True:
         for i, team in enumerate(player_team.schedule):
             print("\nWeek " + str(i + 1) + ":")
             score1, score2 = play_game_player(player_team, player_team.schedule[i])
-            score3, score4 = play_game_nonplayer(player_team.schedule[(0 + i + 1) % 9], player_team.schedule[(0 + i + 2) % 9])
-            score5, score6 = play_game_nonplayer(player_team.schedule[(0 + i + 3) % 9], player_team.schedule[(0 + i + 4) % 9])
-            score7, score8 = play_game_nonplayer(player_team.schedule[(0 + i + 5) % 9], player_team.schedule[(0 + i + 6) % 9])
-            score9, score10 = play_game_nonplayer(player_team.schedule[(0 + i + 7) % 9], player_team.schedule[(0 + i + 8) % 9])
+            score3, score4 = play_game_nonplayer(player_team.schedule[(i + 1) % 9], player_team.schedule[(i + 2) % 9])
+            score5, score6 = play_game_nonplayer(player_team.schedule[(i + 3) % 9], player_team.schedule[(i + 4) % 9])
+            score7, score8 = play_game_nonplayer(player_team.schedule[(i + 5) % 9], player_team.schedule[(i + 6) % 9])
+            score9, score10 = play_game_nonplayer(player_team.schedule[(i + 7) % 9], player_team.schedule[(i + 8) % 9])
             # Ouput the scores of each match is a neatly formatted table
             print("\n")
             print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.name, str(score1), " vs ", str(score2), player_team.schedule[i].name))
             print("\n")
-            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(0 + i + 1) % 9].name, str(score3), " vs ", str(score4), player_team.schedule[(0 + i + 2) % 9].name))
-            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(0 + i + 3) % 9].name, str(score5), " vs ", str(score6), player_team.schedule[(0 + i + 4) % 9].name))
-            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(0 + i + 5) % 9].name, str(score7), " vs ", str(score8), player_team.schedule[(0 + i + 6) % 9].name))
-            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(0 + i + 7) % 9].name, str(score9), " vs ", str(score10), player_team.schedule[(0 + i + 8) % 9].name))
+            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(i + 1) % 9].name, str(score3), " vs ", str(score4), player_team.schedule[(i + 2) % 9].name))
+            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(i + 3) % 9].name, str(score5), " vs ", str(score6), player_team.schedule[(i + 4) % 9].name))
+            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(i + 5) % 9].name, str(score7), " vs ", str(score8), player_team.schedule[(i + 6) % 9].name))
+            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(i + 7) % 9].name, str(score9), " vs ", str(score10), player_team.schedule[(i + 8) % 9].name))
             input("Press any key to continue...")
             current_pos += 1
             clear_console()
