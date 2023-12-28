@@ -115,10 +115,10 @@ def display_standings(current_week):
         player_team_filler = NP_Team(player_team.name, player_team.region, avg_rating)
         player_team_filler.wins = player_team.wins
         player_team_filler.losses = player_team.losses
-        all_teams = player_team.schedule
+        all_teams = player_team.schedule.copy()
         all_teams.append(player_team_filler)
         team_copy_made = True
-        teams_to_be_sorted = all_teams
+        teams_to_be_sorted = all_teams.copy()
     else:
         existing_team_filler = next((team for team in teams_to_be_sorted if team.name == player_team.name), None)
         if existing_team_filler is not None:
