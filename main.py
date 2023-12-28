@@ -118,14 +118,14 @@ def display_standings(current_week):
         all_teams = player_team.schedule.copy()
         all_teams.append(player_team_filler)
         team_copy_made = True
-        teams_to_be_sorted = all_teams.copy()
+        teams_to_be_sorted = all_teams
     else:
         existing_team_filler = next((team for team in teams_to_be_sorted if team.name == player_team.name), None)
         if existing_team_filler is not None:
             existing_team_filler.wins = player_team.wins
             existing_team_filler.losses = player_team.losses
     sorted_teams = sorted(teams_to_be_sorted, key=lambda x: x.wins, reverse=True)
-    for i, team in enumerate(player_team.schedule):
+    for i, team in enumerate(sorted_teams):
         print("{:<20}{:<5}{:<5}".format(sorted_teams[i].name, sorted_teams[i].wins, sorted_teams[i].losses))
 
 
