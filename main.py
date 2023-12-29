@@ -5,14 +5,36 @@ from game import *
 player_team = None
 current_year = 2023
 amer_team_names = ["Sentinels", "LOUD", "NRG", "EG", "Leviatan", "Kru", "MiBR", "Furia", "Cloud9", "100Thieves"]
+amer_teams = []
 apac_team_names = ["DRX", "Paper Rex", "T1", "ZETA DIVISION", "Team Secret", "Gen. G", "RRQ", "Global Esports", "Talon Esports", "DFM"]
+apac_teams = []
 emea_team_names = ["FNATIC", "NaVi", "Team Liquid", "Giants Gaming", "FUT Esports", "Team Vitality", "BBL Esports", "Team Heretics", "KOI", "Karmine Corp"]
+emea_teams = []
 china_team_names = ["EDward Gaming", "Bilibili Gaming", "Trace Esports", "Rare Atom", "Attacking Soul Esports", "TOP Esports", "Dragon Ranger Gaming", "FPX", "Titan Esports Club", "17Gaming"]
+china_teams = []
 team_copy_made = False
 teams_to_be_sorted = []
 
 def clear_console():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+def round_robin(teams):
+    if len(teams) % 2:
+        teams.append(None)  # Add a dummy team for odd number of teams
+
+    n = len(teams)
+    schedule = []
+
+    for week in range(n - 1):
+        week_matches = []
+        for i in range(n // 2):
+            if teams[i] is not None and teams[n - 1 - i] is not None:
+                match = (teams[i], teams[n - 1 - i])
+                week_matches.append(match)
+        teams.insert(1, teams.pop())  # Rotate the list of teams
+        schedule.append(week_matches)
+
+    return schedule
 
 class NP_Team:
     def __init__(self, name, region, rating):
@@ -69,39 +91,43 @@ class Team:
 
     def create_schedule(self):
         if self.region == "Americas":
-            # Randomly create a schedule using the teams from this array except for the player team
+            self.schedule = round_robin(amer_team_names)
             for team in amer_team_names:
-                if team == self.name or team == player_team.name:
+                if self.name == team:
                     continue
                 else:
-                    self.schedule.append(NP_Team(team, self.region, random.randint(30, 70)))
-            random.shuffle(self.schedule)
+                    amer_teams.append(NP_Team(team, "Americas", random.randint(30,70)))
         elif self.region == "EMEA":
+            self.schedule = round_robin(emea_team_names)
             for team in emea_team_names:
-                if team == self.name or team == player_team.name:
+                if self.name == team:
                     continue
                 else:
-                    self.schedule.append(NP_Team(team, self.region, random.randint(30, 70)))
-            random.shuffle(self.schedule)
+                    emea_teams.append(NP_Team(team, "EMEA", random.randint(30,70)))
         elif self.region == "APAC":
+            self.schedule = round_robin(apac_team_names)
             for team in apac_team_names:
-                if team == self.name or team == player_team.name:
+                if self.name == team:
                     continue
                 else:
-                    self.schedule.append(NP_Team(team, self.region, random.randint(30, 70)))
-            random.shuffle(self.schedule)
+                    apac_teams.append(NP_Team(team, "APAC", random.randint(30,70)))
         elif self.region == "China":
+            self.schedule = round_robin(china_team_names)
             for team in china_team_names:
-                if team == self.name or team == player_team.name:
+                if self.name == team:
                     continue
                 else:
-                    self.schedule.append(NP_Team(team, self.region, random.randint(30, 70)))
-            random.shuffle(self.schedule)
+                    china_teams.append(NP_Team(team, "China", random.randint(30,70)))
 
     def display_schedule(self):
         print("\n" + self.name + "'s " + str(current_year) + " Schedule:")
-        for i, team in enumerate(self.schedule):
-            print(str(i + 1) + ". " + team.name)
+        for i, week in enumerate(self.schedule):
+            for match in week:
+                if match[0] == self.name:
+                    print("Week " + str(i + 1) + ": " + match[1])
+                elif match[1] == self.name:
+                    print("Week " + str(i + 1) + ": " + match[0])
+                
 
 def display_standings(current_week):
     global team_copy_made
@@ -138,6 +164,8 @@ def region_select():
         print("3. Asia Pacific")
         print("4. China\n")
         region_choice = int(input("Enter your choice: "))
+        clear_console()
+        print("Available Teams: \n")
         if region_choice == 1:
             for team in amer_team_names:
                 print(str(i) + ". " + team)
@@ -220,6 +248,24 @@ def initial_player_select():
         print("\n 0. Continue\n")
         initial_clear_complete = True
 
+def find_team_by_name(team_name):
+    if player_team.region == "Americas":
+        for team in amer_teams:
+            if team.name == team_name:
+                return team
+    elif player_team.region == "EMEA":
+        for team in emea_teams:
+            if team.name == team_name:
+                return team
+    elif player_team.region == "APAC":
+        for team in apac_teams:
+            if team.name == team_name:
+                return team
+    elif player_team.region == "China":
+        for team in china_teams:
+            if team.name == team_name:
+                return team
+
 while True:
     clear_console()
     print("\nWelcome to Esports Manager!\n")
@@ -259,24 +305,21 @@ while True:
         ### Create a method to play each game, week-by-week
         clear_console()
         
-        current_pos = 0
-        for i, team in enumerate(player_team.schedule):
-            print("\nWeek " + str(i + 1) + ":")
-            score1, score2 = play_game_player(player_team, player_team.schedule[i])
-            score3, score4 = play_game_nonplayer(player_team.schedule[(i + 1) % 9], player_team.schedule[(i + 2) % 9])
-            score5, score6 = play_game_nonplayer(player_team.schedule[(i + 3) % 9], player_team.schedule[(i + 4) % 9])
-            score7, score8 = play_game_nonplayer(player_team.schedule[(i + 5) % 9], player_team.schedule[(i + 6) % 9])
-            score9, score10 = play_game_nonplayer(player_team.schedule[(i + 7) % 9], player_team.schedule[(i + 8) % 9])
-            # Ouput the scores of each match is a neatly formatted table
+        
+        for i, week in enumerate(player_team.schedule):
+            print("\nWeek " + str(i + 1) + ":\n")
+            for match in week:
+                if match[0] == player_team.name:
+                    score1, score2 = play_game_player(player_team, find_team_by_name(match[1]))
+                    print("\n")
+                elif match[1] == player_team.name:
+                    score1, score2 = play_game_player(player_team, find_team_by_name(match[0]))
+                    print("\n")
+                else:
+                    score1, score2 = play_game_nonplayer(find_team_by_name(match[0]), find_team_by_name(match[1]))
+                print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(match[0], str(score1), " vs ", str(score2), match[1]))
             print("\n")
-            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.name, str(score1), " vs ", str(score2), player_team.schedule[i].name))
-            print("\n")
-            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(i + 1) % 9].name, str(score3), " vs ", str(score4), player_team.schedule[(i + 2) % 9].name))
-            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(i + 3) % 9].name, str(score5), " vs ", str(score6), player_team.schedule[(i + 4) % 9].name))
-            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(i + 5) % 9].name, str(score7), " vs ", str(score8), player_team.schedule[(i + 6) % 9].name))
-            print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(player_team.schedule[(i + 7) % 9].name, str(score9), " vs ", str(score10), player_team.schedule[(i + 8) % 9].name))
             input("Press any key to continue...")
-            current_pos += 1
             clear_console()
             display_standings(i + 1)
             input("Press any key to continue...")
