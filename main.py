@@ -141,7 +141,15 @@ def display_standings(current_week):
         player_team_filler = NP_Team(player_team.name, player_team.region, avg_rating)
         player_team_filler.wins = player_team.wins
         player_team_filler.losses = player_team.losses
-        all_teams = player_team.schedule.copy()
+        # Check the region of okayer team and assign all teams in that region to be sorted
+        if player_team.region == "Americas":
+            all_teams = amer_teams.copy()
+        elif player_team.region == "EMEA":
+            all_teams = emea_teams.copy()
+        elif player_team.region == "APAC":
+            all_teams = apac_teams.copy()
+        elif player_team.region == "China":
+            all_teams = china_teams.copy()
         all_teams.append(player_team_filler)
         team_copy_made = True
         teams_to_be_sorted = all_teams
@@ -150,7 +158,7 @@ def display_standings(current_week):
         if existing_team_filler is not None:
             existing_team_filler.wins = player_team.wins
             existing_team_filler.losses = player_team.losses
-    sorted_teams = sorted(teams_to_be_sorted, key=lambda x: x.wins, reverse=True)
+    sorted_teams = sorted(teams_to_be_sorted, key=lambda x: x.wins if hasattr(x, 'wins') else 0, reverse=True)
     for i, team in enumerate(sorted_teams):
         print("{:<20}{:<5}{:<5}".format(sorted_teams[i].name, sorted_teams[i].wins, sorted_teams[i].losses))
 
