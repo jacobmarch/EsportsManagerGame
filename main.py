@@ -274,6 +274,50 @@ def find_team_by_name(team_name):
             if team.name == team_name:
                 return team
 
+def get_x_top_teams(z, teams):
+    playoff_teams = []
+    sorted_teams = sorted(teams, key=lambda x: x.wins if hasattr(x, 'wins') else 0, reverse=True)
+    for i in range(0,z):
+        playoff_teams[i] = sorted_teams[i]
+        
+    return playoff_teams
+
+def sim_playoffs(list_of_teams):
+    clear_console()
+    top6 = get_x_top_teams(6, list_of_teams)
+    first_round = [[top6[3], top6[4]], [top6[2],top6[5]]]
+    print("IT'S PLAYOFFS TIME\n")
+    input("Press any key to continue...")
+    clear_console()
+    print("Seeding:\n")
+    print("1. " + top6[0].name + "\n2. " + top6[1].name + "\n3. " + top6[2].name + "\n4. " + top6[3].name + "\n5. " + top6[4].name + "\n6. " + top6[5].name + "\n")
+    input("Press any key to continue...")
+    clear_console()
+    semifinals = []
+    semifinals.append(top6[0])
+    semifinals.append(top6[1])
+    for team1, team2 in first_round:
+        if team1.name == player_team.name:
+            team1_score, team2_score = play_game_player(player_team, team2)
+            if team1_score > team2_score:
+                semifinals.append(team1)
+            else:
+                semifinals.append(team2)
+        elif team2.name == player_team.name:
+            team1_score, team2_score = play_game_player(player_team, team1)
+            if team1_score > team2_score:
+                semifinals.append(team1)
+            else:
+                semifinals.append(team2)
+        else:
+            team1_score, team2_score = play_game_nonplayer(team1, team2)
+            if team1_score > team2_score:
+                semifinals.append(team1)
+            else:
+                semifinals.append(team2)
+        
+        
+
 while True:
     clear_console()
     print("\nWelcome to Esports Manager!\n")
@@ -311,8 +355,6 @@ while True:
         player_team.display_schedule()
         input("Press any key to continue...")
         ### Create a method to play each game, week-by-week
-        clear_console()
-        
         
         for i, week in enumerate(player_team.schedule):
             print("\nWeek " + str(i + 1) + ":\n")
@@ -333,8 +375,15 @@ while True:
             input("Press any key to continue...")
             clear_console()
 
-        ### Display results of each game
-
+        # Create the playoffs of top 6 teams from the season
+        if player_team.region == "Americas":
+            sim_playoffs(amer_teams)
+        elif player_team.region == "EMEA":
+            sim_playoffs(emea_teams)
+        elif player_team.region == "APAC":
+            sim_playoffs(apac_teams)
+        elif player_team.region == "China":
+            sim_playoffs(china_teams)
     elif choice == 2:
         clear_console()
         break
