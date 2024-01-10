@@ -90,32 +90,34 @@ class Team:
         self.current_salary -= player.salary
 
     def create_schedule(self):
+        player_ratings = [player.rating for player in player_team.players]
+        avg_rating = sum(player_ratings) / len(player_ratings)
         if self.region == "Americas":
             self.schedule = round_robin(amer_team_names)
             for team in amer_team_names:
                 if self.name == team:
-                    continue
+                    amer_teams.append(NP_Team(team, "Americas", avg_rating))
                 else:
                     amer_teams.append(NP_Team(team, "Americas", random.randint(30,70)))
         elif self.region == "EMEA":
             self.schedule = round_robin(emea_team_names)
             for team in emea_team_names:
                 if self.name == team:
-                    continue
+                    emea_teams.append(NP_Team(team, "EMEA", avg_rating))
                 else:
                     emea_teams.append(NP_Team(team, "EMEA", random.randint(30,70)))
         elif self.region == "APAC":
             self.schedule = round_robin(apac_team_names)
             for team in apac_team_names:
                 if self.name == team:
-                    continue
+                    apac_teams.append(NP_Team(team, "APAC", avg_rating))
                 else:
                     apac_teams.append(NP_Team(team, "APAC", random.randint(30,70)))
         elif self.region == "China":
             self.schedule = round_robin(china_team_names)
             for team in china_team_names:
                 if self.name == team:
-                    continue
+                    china_teams.append(NP_Team(team, "China", avg_rating))
                 else:
                     china_teams.append(NP_Team(team, "China", random.randint(30,70)))
 
@@ -134,7 +136,6 @@ def display_standings(current_week):
     global teams_to_be_sorted
     print("\nWeek " + str(current_week) + " Standings:")
     print("{:<20}{:<5}{:<5}".format("Team", "W", "L"))
-    print("\n")
     if team_copy_made == False:
         player_ratings = [player.rating for player in player_team.players]
         avg_rating = sum(player_ratings) / len(player_ratings)
@@ -278,7 +279,7 @@ def get_x_top_teams(z, teams):
     playoff_teams = []
     sorted_teams = sorted(teams, key=lambda x: x.wins if hasattr(x, 'wins') else 0, reverse=True)
     for i in range(0,z):
-        playoff_teams[i] = sorted_teams[i]
+        playoff_teams.append(sorted_teams[i])
         
     return playoff_teams
 
@@ -286,6 +287,8 @@ def sim_playoffs(list_of_teams):
     clear_console()
     top6 = get_x_top_teams(6, list_of_teams)
     first_round = [[top6[3], top6[4]], [top6[2],top6[5]]]
+    for team in list_of_teams:
+        print(team.name)
     print("IT'S PLAYOFFS TIME\n")
     input("Press any key to continue...")
     clear_console()
@@ -296,6 +299,7 @@ def sim_playoffs(list_of_teams):
     semifinals = []
     semifinals.append(top6[0])
     semifinals.append(top6[1])
+    print("First Round:\n\n")
     for team1, team2 in first_round:
         if team1.name == player_team.name:
             team1_score, team2_score = play_game_player(player_team, team2)
@@ -315,6 +319,10 @@ def sim_playoffs(list_of_teams):
                 semifinals.append(team1)
             else:
                 semifinals.append(team2)
+        print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(team1.name, team1_score, " vs ", team2_score, team2.name))
+    print("\n")
+    input("Press any key to continue...")
+    
         
         
 
