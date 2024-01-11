@@ -287,8 +287,6 @@ def sim_playoffs(list_of_teams):
     clear_console()
     top6 = get_x_top_teams(6, list_of_teams)
     first_round = [[top6[3], top6[4]], [top6[2],top6[5]]]
-    for team in list_of_teams:
-        print(team.name)
     print("IT'S PLAYOFFS TIME\n")
     input("Press any key to continue...")
     clear_console()
@@ -297,6 +295,7 @@ def sim_playoffs(list_of_teams):
     input("Press any key to continue...")
     clear_console()
     semifinals = []
+    finals = []
     semifinals.append(top6[0])
     semifinals.append(top6[1])
     print("First Round:\n\n")
@@ -322,6 +321,48 @@ def sim_playoffs(list_of_teams):
         print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(team1.name, team1_score, " vs ", team2_score, team2.name))
     print("\n")
     input("Press any key to continue...")
+    if semifinals[0].name == player_team.name:
+        team1_score, team2_score = play_game_player(player_team, semifinals[3])
+    elif semifinals[3].name == player_team.name:
+        team1_score, team2_score = play_game_player(player_team, semifinals[0])
+    else:
+        team1_score, team2_score = play_game_nonplayer(semifinals[0], semifinals[3])
+    if team1_score > team2_score:
+        finals.append(semifinals[0])
+    else:
+        finals.append(semifinals[3])
+    print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(semifinals[0].name, team1_score, " vs ", team2_score, semifinals[3].name))
+    if semifinals[1].name == player_team.name:
+        team1_score, team2_score = play_game_player(player_team, semifinals[2])
+    elif semifinals[2].name == player_team.name:
+        team1_score, team2_score = play_game_player(player_team, semifinals[1])
+    else:
+        team1_score, team2_score = play_game_nonplayer(semifinals[1], semifinals[2])
+    if team1_score > team2_score:
+        finals.append(semifinals[1])
+    else:
+        finals.append(semifinals[2])
+    print("{:<15} {:<15} {:<15} {:<15} {:<15}".format(semifinals[1].name, team1_score, " vs ", team2_score, semifinals[2].name))
+    print("\n")
+    input("Press any key to continue...")
+    if finals[0].name == player_team.name:
+        team1_score, team2_score = play_game_player(player_team, finals[1])
+    elif finals[1].name == player_team.name:
+        team1_score, team2_score = play_game_player(player_team, finals[0])
+    else:
+        team1_score, team2_score = play_game_nonplayer(finals[0], finals[1])
+    if team1_score > team2_score:
+        print("Winner: " + finals[0].name)
+        print("Loser: " + finals[1].name)
+        print("Final Score: " + str(team1_score) + " - " + str(team2_score))
+    else:
+        print("Winner: " + finals[1].name)
+        print("Loser: " + finals[0].name)
+        print("Final Score: " + str(team2_score) + " - " + str(team1_score))
+    print("\n")
+    input("Press any key to continue...")
+
+        
     
         
         
