@@ -30,6 +30,14 @@ class Player:
             "mental": random.randint(0, 100)
         }
         
+        # Calculate the average rating of the player
+        def calculate_average_rating(self):
+            total_rating = sum(self.ratings.values())
+            self.average_rating = total_rating / len(self.ratings)
+            
+        
+        
+        
         # Check if the leadership rating and gamesense rating are both above 80
         # If so, set the instance variable igl to True, otherwise set it to False
         self.igl = self.ratings["leadership"] > 80 and self.ratings["gamesense"] > 80

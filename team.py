@@ -26,4 +26,13 @@ class Team:
     
     def set_coach(self, coach):
         self.coach = coach
-            
+    
+    def calculate_team_average_rating(self, starters):
+        total_rating = 0
+        num_starters = len(starters)
+
+        for starter in starters:
+            total_rating += starter.calculate_average_rating()
+    
+        self.team_average_rating = total_rating / num_starters
+               
