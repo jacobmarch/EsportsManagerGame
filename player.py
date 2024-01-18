@@ -47,4 +47,8 @@ class Player:
         else:
             # Generate gamertag using only a random noun from the file
             self.gamertag = random.choice(open("noun.txt").readlines()).strip()
+        self.age = random.randint(18,24)
+    
+    def set_salary(self, salary):
+        self.salary = salary
         
