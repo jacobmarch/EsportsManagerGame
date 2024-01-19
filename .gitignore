@@ -11,3 +11,4 @@ __pycache__/database_setup.cpython-310.pyc
 __pycache__/game_simulation.cpython-310.pyc
 __pycache__/game.cpython-310.pyc
 __pycache__/game.cpython-311.pyc
+.vscode/settings.json
