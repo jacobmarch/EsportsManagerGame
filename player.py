@@ -46,11 +46,9 @@ class Player:
             self.role = "Initiator"
         elif self.d == self.s or self.d == self.c or self.d == self.i:
             self.role = "Flex"
-        elif self.s == self.d or self.s == self.c or self.s == self.i:
+        elif self.s == self.c or self.s == self.i:
             self.role = "Flex"
-        elif self.c == self.d or self.c == self.s or self.c == self.i:
-            self.role = "Flex"
-        elif self.i == self.d or self.i == self.s or self.i == self.c:
+        elif self.c == self.i:
             self.role = "Flex"
         
         

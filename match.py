@@ -1,23 +1,23 @@
 import random
 from team import Team
 from player import Player
-
-class Interaction:
-    def __init__(self, players_involved):
-        self.players_involved = players_involved
-
-    def determine_interaction_type(self):
-        if self.players_involved == 2:
-            self.type_of_interaction = random.choice(["1v1", ])
-        
-
+            
 class Round:
     def __init__(self, team1, team2, t1_economy, t2_economy):
         self.team1 = team1
         self.team2 = team2
-        self.player_states = []
-        for i in range (1, 10):
-            self.player_states.append("alive")
+        self.t1_player_states = []
+        self.t2_player_states = []
+        self.t1_economy = t1_economy
+        self.t2_economy = t2_economy
+        for i in range (1, 5):
+            self.t1_player_states.append("alive")
+            self.t2_player_states.append("alive")
+
+    def simulate_round(self):
+        while self.t1_player_states.count("alive") > 0 and self.t2_player_states.count("alive") > 0:
+            
+
 
 
 class Map:
