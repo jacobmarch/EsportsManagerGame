@@ -16,6 +16,7 @@ class Player:
         self.firstname = firstname
         self.lastname = lastname
         
+        
         # Choose a random role from a list of roles and assign it to the role instance variable
         self.role = random.choice(["Duelist", "Sentinel", "Controller", "Initiator", "Flex"])
         
@@ -29,6 +30,29 @@ class Player:
             "leadership": random.randint(0, 100),
             "mental": random.randint(0, 100)
         }
+        #duelist = aim + positioning; sentinel = positioning + gamesense; controller = utility + positioning; initiator = aim + utility; flex = double role
+        self.d = self.ratings["aim"] + self.ratings["positioning"]
+        self.s = self.ratings["positioning"] + self.ratings["gamesense"]
+        self.c = self.ratings["utility"] + self.ratings["positioning"]
+        self.i = self.ratings["aim"] + self.ratings["utility"]
+
+        if self.d > self.s and self.d > self.c and self.d > self.i:
+            self.role = "Duelist"
+        elif self.s > self.d and self.s > self.c and self.s > self.i:
+            self.role = "Sentinel"
+        elif self.c > self.d and self.c > self.s and self.c > self.i:
+            self.role = "Controller"
+        elif self.i > self.d and self.i > self.s and self.i > self.c:
+            self.role = "Initiator"
+        elif self.d == self.s or self.d == self.c or self.d == self.i:
+            self.role = "Flex"
+        elif self.s == self.d or self.s == self.c or self.s == self.i:
+            self.role = "Flex"
+        elif self.c == self.d or self.c == self.s or self.c == self.i:
+            self.role = "Flex"
+        elif self.i == self.d or self.i == self.s or self.i == self.c:
+            self.role = "Flex"
+        
         
         # Calculate the average rating of the player
         def calculate_average_rating(self):
