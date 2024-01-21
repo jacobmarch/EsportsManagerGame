@@ -1,3 +1,5 @@
+from team import Team
+
 class League:
     
     # Initializes a new instance of the class.
@@ -31,9 +33,12 @@ class League:
         self.teams.insert(1, rotating_team)
 
 league = League()
+team = Team("Team A")
+team = Team("Team B")
+team = Team("Team C")
+team = Team("Team D")
 league.add_team("Team A")
 league.add_team("Team B")
 league.add_team("Team C")
 league.add_team("Team D")
-league.add_team("Team E")
 league.schedule_round_robin()
