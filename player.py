@@ -54,6 +54,26 @@ class Player:
         
         # Calculate the average rating of the player
         def calculate_average_rating(self):
+            if(self.role == "Duelist"):
+                self.ratings["aim"] = self.ratings["aim"] * 1.5
+                self.ratings["positioning"] = self.ratings["positioning"] * 1.5
+                self.ratings["utility"] = self.ratings["utility"] * 0.75
+                self.ratings["gamesense"] = self.ratings["gamesense"] * 0.75
+            elif(self.role == "Sentinel"):
+                self.ratings["positioning"] = self.ratings["positioning"] * 1.5
+                self.ratings["gamesense"] = self.ratings["gamesense"] * 1.5
+                self.ratings["utility"] = self.ratings["utility"] * 0.75
+                self.ratings["aim"] = self.ratings["aim"] * 0.75
+            elif(self.role == "Controller"):
+                self.ratings["utility"] = self.ratings["utility"] * 1.5
+                self.ratings["positioning"] = self.ratings["positioning"] * 1.5
+                self.ratings["aim"] = self.ratings["aim"] * 0.75
+                self.ratings["gamesense"] = self.ratings["gamesense"] * 0.75
+            elif(self.role == "Initiator"):
+                self.ratings["aim"] = self.ratings["aim"] * 1.5
+                self.ratings["utility"] = self.ratings["utility"] * 1.5
+                self.ratings["gamesense"] = self.ratings["gamesense"] * 0.75
+                self.ratings["positioning"] = self.ratings["positioning"] * 0.75
             total_rating = sum(self.ratings.values())
             self.average_rating = total_rating / len(self.ratings)
             
