@@ -56,16 +56,27 @@ class Team:
         Set the coach of the team.
 
         Args:
-        - coach (str): The name of the coach.
+        - coach (Coach): The coach of the team.
         """
         self.coach = coach
     
     def calculate_team_average_rating(self, starters):
+        """
+        Calculate the average rating for a team based on the ratings of the starters.
+
+        Parameters:
+            self (obj): The instance of the class
+            starters (list): List of player objects
+
+        Returns:
+            None
+        """
         total_rating = 0
-        num_starters = len(starters)
 
         for starter in starters:
             total_rating += starter.calculate_average_rating()
     
-        self.team_average_rating = total_rating / num_starters
+        team_average_rating = total_rating / len(starters)
+        
+        return team_average_rating
                

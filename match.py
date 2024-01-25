@@ -2,12 +2,9 @@ import random
 from team import Team
 from player import Player
 from copy import copy
-            
-
-
 
 class Map:
-    def __init__(self, team1, team2):
+    def __init__(self, team1: Team, team2: Team):
         self.team1 = copy(team1)
         self.team2 = copy(team2)
         self.t1rounds = 0
@@ -23,11 +20,7 @@ class Map:
         
     def simulate_round(self):
         #Don't need to actually simulate a round step-by-step, just determine a winner
-        
-        if self.t1_player_states.count("alive") == 0:
-            self.t1rounds += 1
-        elif self.t2_player_states.count("alive") == 0:
-            self.t2rounds += 1
+        t1_avg = self.team1.calculate_team_average_rating()
 
     def simulate_map(self):
         while (self.t1rounds < 13 and self.team2rounds < 13) or (self.t1rounds - self.t2rounds < 2 and self.t1rounds - self.t2rounds > -2):
@@ -38,3 +31,8 @@ class Match:
         self.team1 = copy(team1)
         self.team2 = copy(team2)
         self.best_of = best_of
+        
+    def simulate_match(self):
+        wins_required = (self.best_of // 2) + 1
+        while (self.team1.wins < wins_required and self.team2.wins < wins_required):
+            self.simulate_map()
