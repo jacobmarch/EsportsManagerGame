@@ -60,7 +60,7 @@ class Team:
         """
         self.coach = coach
     
-    def calculate_team_average_rating(self, starters):
+    def calculate_team_average_rating(self, starters) -> float:
         """
         Calculate the average rating for a team based on the ratings of the starters.
 
