@@ -23,8 +23,12 @@ class Map:
 
         if self.t1economy < 0:
             self.t1economy = 0
+        if self.t1economy > 5:
+            self.t1economy = 5
         if self.t2economy < 0:
             self.t2economy = 0
+        if self.t2economy > 5:
+            self.t2economy = 5
 
         #Don't need to actually simulate a round step-by-step, just determine a winner
         t1_avg = self.team1.calculate_team_average_rating(self.team1.starters)
